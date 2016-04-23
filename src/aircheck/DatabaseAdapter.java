@@ -5,12 +5,8 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
 
 public class DatabaseAdapter {
-
-    public static final double EPS = 0.000001;
-
     private MysqlDataSource dataSource;
     private Connection connection;
 
@@ -28,7 +24,7 @@ public class DatabaseAdapter {
     }
 
     public boolean cmpDouble(double a, double b) {
-        return Math.abs(a - b) <= EPS;
+        return Math.abs(a - b) <= ServerConfig.EPS;
     }
 
     public void getReports(ArrayList<UserReport> reports) {
@@ -42,13 +38,13 @@ public class DatabaseAdapter {
 
             while (rs.next()) {
                 UserReport report = new UserReport();
-                report.reportID = rs.getInt("id");
+                report.id = rs.getInt("id");
                 report.latitude = rs.getDouble("latitude");
                 report.longitude = rs.getDouble("longitude");
-                report.submissionTime = rs.getDate("created_at");
+                report.createdDate = rs.getDate("created_at");
 
                 report.addSymptomReport(new UserReport.SymptomReport(rs.getInt("symptom_id"), rs.getInt("severity")));
-                report.printInfo();
+                System.out.println(report);
 
                 tempReports.add(report);
             }
@@ -63,10 +59,12 @@ public class DatabaseAdapter {
 
         Collections.sort(tempReports);
 
-        System.out.println("info in collections");
-        for (UserReport ur: tempReports){
-            System.out.printf("lat = %.4f, lng = %.4f\n", ur.latitude, ur.longitude);
+        System.out.println("Reported Incidents");
+        System.out.println("==================");
+        for (UserReport report : tempReports) {
+            System.out.println(report);
         }
+        System.out.println("==================");
 
         int lastIndex = 0;
 
@@ -80,6 +78,25 @@ public class DatabaseAdapter {
         }
     }
 
+    public void addMappingPoints(ArrayList<MapPoint> points) {
+        String query = "INSERT INTO mapping (latitude, longitude, radius, severity) VALUES ";
+        for (int i = 0; i < points.size(); i++) {
+            MapPoint point = points.get(i);
+            query += "(" + point.latitude + "," + point.longitude + "," + point.radius + "," + 1 + ")";
+            if (i != points.size() - 1) {
+                query += ",";
+            }
+        }
+
+        try {
+            Statement statement = connection.createStatement();
+            System.out.println(query);
+            statement.executeUpdate(query);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void clearMappingPoints() {
         try {
             Statement statement = connection.createStatement();
@@ -87,33 +104,5 @@ public class DatabaseAdapter {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-    public void addMappingPoint(MapPoint point) {
-        try {
-            Statement statement = connection.createStatement();
-
-            String query = "INSERT INTO mapping (latitude, longitude, radius, severity) VALUES ("
-                    + point.latitude + "," + point.longitude + "," + point.radius + "," + 1 + ")";
-
-            System.out.println(query);
-
-            statement.executeUpdate(query);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-
-    public static double distFrom(double lat1, double lng1, double lat2, double lng2) {
-        double earthRadius = 6371000;
-        double dLat = Math.toRadians(lat2-lat1);
-        double dLng = Math.toRadians(lng2-lng1);
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                        Math.sin(dLng/2) * Math.sin(dLng/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        double dist = (double) (earthRadius * c);
-
-        return dist;
     }
 }

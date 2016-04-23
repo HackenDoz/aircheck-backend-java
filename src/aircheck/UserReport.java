@@ -4,35 +4,31 @@ import java.sql.Date;
 import java.util.ArrayList;
 
 public class UserReport implements Comparable<UserReport> {
-
-    public static final double EPS = 0.000001;
-
     public static class SymptomReport {
-        public int symptomID;
+        public int id;
         public int severity;
 
-        public SymptomReport(int _symptomID, int _severity) {
-            this.symptomID = _symptomID;
-            this.severity = _severity;
+        public SymptomReport(int id, int severity) {
+            this.id = id;
+            this.severity = severity;
         }
     }
 
-    public int reportID;
-    public Date submissionTime;
-
+    public int id;
     public double latitude;
     public double longitude;
+    public Date createdDate;
 
     public ArrayList<SymptomReport> symptoms = new ArrayList<>();
 
     public UserReport() {
     }
 
-    public UserReport(int _reportID, double _latitude, double _longitude, Date _submissionDate) {
-        this.reportID = _reportID;
-        this.latitude = _latitude;
-        this.longitude = _longitude;
-        this.submissionTime = _submissionDate;
+    public UserReport(int id, double latitude, double longitude, Date createdDate) {
+        this.id = id;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.createdDate = createdDate;
     }
 
     public void addSymptomReport(SymptomReport _report) {
@@ -40,23 +36,23 @@ public class UserReport implements Comparable<UserReport> {
     }
 
     public double getDistance(UserReport report) {
-        return DatabaseAdapter.distFrom(latitude, longitude, report.latitude, report.longitude);
+        return MapPoint.distFrom(latitude, longitude, report.latitude, report.longitude);
     }
 
     @Override
     public int compareTo(UserReport report) {
-        if (Math.abs(this.latitude - report.latitude) > EPS)
+        if (Math.abs(this.latitude - report.latitude) > ServerConfig.EPS)
             return (this.latitude < report.latitude ? -1 : 1);
         return (this.longitude < report.longitude ? -1 : 1);
     }
 
     public boolean equals(UserReport report) {
-        return Math.abs(this.latitude - report.latitude) < EPS &&
-                Math.abs(this.longitude - report.longitude) < EPS;
+        return Math.abs(this.latitude - report.latitude) < ServerConfig.EPS &&
+                Math.abs(this.longitude - report.longitude) < ServerConfig.EPS;
     }
 
-    public void printInfo(){
-        System.out.printf("reportID = %d, lat = %.4f, lng = %.4f\n", reportID, latitude, longitude);
+    @Override
+    public String toString() {
+        return String.format("UserReport[id=%d, lat=%.4f, lng=%.4f]", id, latitude, longitude);
     }
-
 }

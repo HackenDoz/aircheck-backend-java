@@ -30,14 +30,9 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        System.out.println("hi");
-
         reports = new ArrayList<>();
-        System.out.println("hi");
         dbAdapter = new DatabaseAdapter();
-        System.out.println("hi");
         points = new HashMap<>();
-        System.out.println("hi");
 
         while (true) {
             System.out.println("Waiting for reports");
@@ -66,6 +61,7 @@ public class Main {
             }
 
             dbAdapter.clearMappingPoints();
+            ArrayList<MapPoint> mapPoints = new ArrayList<>();
             for (Map.Entry<Integer, ArrayList<MapPoint>> entry : points.entrySet()) {
                 if (entry.getValue() != null && entry.getValue().size() != 0) {
                     double minX = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE;
@@ -79,10 +75,11 @@ public class Main {
                         maxY = Math.max(maxY, pp.longitude);
                     }
 
-                    dbAdapter.addMappingPoint(new MapPoint((minX + maxX) / 2.0, (minY + maxY) / 2.0,
+                    mapPoints.add(new MapPoint((minX + maxX) / 2.0, (minY + maxY) / 2.0,
                             Math.max(maxX - minX, maxY - minY) / 2.0 + ServerConfig.CIRCLE_RADIUS));
                 }
             }
+            dbAdapter.addMappingPoints(mapPoints);
 
             try {
                 Thread.sleep(5000);
