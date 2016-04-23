@@ -1,19 +1,18 @@
 package aircheck;
 
 public class MapPoint {
-    public int reportID;
-
     public double latitude;
     public double longitude;
     public double radius;
+    public int symptom;
+    public int severity;
 
-    public MapPoint() {
-    }
-
-    public MapPoint(double latitude, double longitude, double radius) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.radius = radius;
+    public MapPoint(double _latitude, double _longitude, double _radius, int _symptom, int _severity) {
+        this.latitude = _latitude;
+        this.longitude = _longitude;
+        this.radius = _radius;
+        this.symptom = _symptom;
+        this.severity = _severity;
     }
 
     public double getDistance(MapPoint point) {

@@ -19,7 +19,6 @@ public class DatabaseAdapter {
         dataSource.setUser(ServerConfig.MYSQL_USER);
         dataSource.setPassword(ServerConfig.MYSQL_PASS);
 
-        //TODO: make the code not shit
         this.connection = dataSource.getConnection();
     }
 
@@ -27,25 +26,21 @@ public class DatabaseAdapter {
         return Math.abs(a - b) <= ServerConfig.EPS;
     }
 
-    public void getReports(ArrayList<UserReport> reports) {
+    public void getReportsBySymptom(ArrayList<UserReport> reports, int symptomID) {
         reports.clear();
 
         ArrayList<UserReport> tempReports = new ArrayList<>();
 
         try {
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM reports");
+            ResultSet rs = statement.executeQuery("SELECT * FROM reports WHERE `symptom_id` = " + symptomID);
 
             while (rs.next()) {
-                UserReport report = new UserReport();
-                report.id = rs.getInt("id");
-                report.latitude = rs.getDouble("latitude");
-                report.longitude = rs.getDouble("longitude");
-                report.createdDate = rs.getDate("created_at");
+                UserReport report = new UserReport(rs.getInt("id"), rs.getDouble("latitude"),
+                        rs.getDouble("longitude"), rs.getDate("created_at"), symptomID);
 
-                report.addSymptomReport(new UserReport.SymptomReport(rs.getInt("symptom_id"), rs.getInt("severity")));
+                report.addSymptomSeverity(rs.getInt("severity"));
                 System.out.println(report);
-
                 tempReports.add(report);
             }
         } catch (SQLException ex) {
@@ -54,8 +49,8 @@ public class DatabaseAdapter {
             ex.printStackTrace();
         }
 
-        //Placeholder element to make sorting work
-        tempReports.add(new UserReport(-1, 99999, 99999, new Date(0)));
+        // Placeholder element to make sorting work
+        tempReports.add(new UserReport(-1, 99999, 99999, new Date(0), -1));
 
         Collections.sort(tempReports);
 
@@ -79,10 +74,13 @@ public class DatabaseAdapter {
     }
 
     public void addMappingPoints(ArrayList<MapPoint> points) {
-        String query = "INSERT INTO mapping (latitude, longitude, radius, severity) VALUES ";
+        if (points.size() == 0) return;
+
+        String query = "INSERT INTO mapping (latitude, longitude, radius, severity, symptom_id) VALUES ";
         for (int i = 0; i < points.size(); i++) {
             MapPoint point = points.get(i);
-            query += "(" + point.latitude + "," + point.longitude + "," + point.radius + "," + 1 + ")";
+            query += "(" + point.latitude + "," + point.longitude + "," + point.radius + "," + points.get(i).severity+ ","
+                    + points.get(i).symptom + ")";
             if (i != points.size() - 1) {
                 query += ",";
             }
@@ -100,7 +98,7 @@ public class DatabaseAdapter {
     public void clearMappingPoints() {
         try {
             Statement statement = connection.createStatement();
-            statement.executeUpdate("DELETE FROM mapping");
+            statement.executeUpdate("TRUNCATE TABLE mapping");
         } catch (SQLException e) {
             e.printStackTrace();
         }

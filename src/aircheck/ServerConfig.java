@@ -9,4 +9,6 @@ public class ServerConfig {
 
     public static final int CIRCLE_RADIUS = 10;
     public static final double EPS = 0.001;
+
+    public static final int SYMPTOM_COUNT = 5;
 }
