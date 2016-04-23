@@ -1,6 +1,9 @@
 package aircheck;
 
 public class MapPoint {
+
+    public int reportID;
+
     public double latitude;
     public double longitude;
     public double radius;

@@ -47,7 +47,7 @@ public class DatabaseAdapter {
                 report.longitude = rs.getDouble("longitude");
                 report.submissionTime = rs.getDate("created_at");
 
-                report.addSymptomReport(new UserReport.SymptomReport(rs.getInt("SymptomID"), rs.getInt("Severity")));
+                report.addSymptomReport(new UserReport.SymptomReport(rs.getInt("symptom_id"), rs.getInt("severity")));
 
                 tempReports.add(report);
             }
@@ -78,7 +78,12 @@ public class DatabaseAdapter {
         try {
             Statement statement = connection.createStatement();
 
+            statement.executeQuery("TRUNCATE TABLE mapping");
 
+            String query = "INSERT INTO mapping (latitude, longitude, radius, severity) VALUES ("
+                    + point.latitude + "," + point.longitude + "," + point.radius + "," + 1 + ")";
+
+            statement.executeQuery(query);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
