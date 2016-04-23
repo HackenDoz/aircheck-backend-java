@@ -20,7 +20,7 @@ public class MapPoint {
     }
 
     public static double distFrom(double lat1, double lng1, double lat2, double lng2) {
-        double earthRadius = 6371000;
+        double earthRadius = 6371;
         double dLat = Math.toRadians(lat2 - lat1);
         double dLng = Math.toRadians(lng2 - lng1);
         double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +

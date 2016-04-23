@@ -29,7 +29,7 @@ public class DisjointSet {
         disjointSet[ra] = rb;
     }
 
-    public void finalize(){
+    public void finish(){
         points = new HashMap<>();
 
         for (int i = 0; i < reports.size(); i++){
@@ -37,8 +37,8 @@ public class DisjointSet {
                 points.put(find(i), new ArrayList<MapPoint>());
 
             double lat = reports.get(i).latitude, lng = reports.get(i).longitude;
-            int symp = reports.get(i).symptomID, sev = reports.get(i).getSeverity();
-            points.get(find(i)).add(new MapPoint(lat, lng, ServerConfig.CIRCLE_RADIUS, symp, sev));
+            int symptom = reports.get(i).symptomID, severity = reports.get(i).getSeverity();
+            points.get(find(i)).add(new MapPoint(lat, lng, ServerConfig.CIRCLE_RADIUS, symptom, severity));
         }
     }
 }

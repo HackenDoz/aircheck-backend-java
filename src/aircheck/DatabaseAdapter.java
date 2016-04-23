@@ -1,8 +1,11 @@
 package aircheck;
 
+import com.mysql.jdbc.*;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import java.sql.*;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -26,6 +29,23 @@ public class DatabaseAdapter {
         return Math.abs(a - b) <= ServerConfig.EPS;
     }
 
+    public ArrayList<Symptom> getSymptoms() {
+        ArrayList<Symptom> symptoms = new ArrayList<>();
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM symptoms");
+
+            while(rs.next()) {
+                Symptom symptom = new Symptom(rs.getInt("id"), rs.getString("name"), rs.getString("desc"));
+                symptoms.add(symptom);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return symptoms;
+    }
     public void getReportsBySymptom(ArrayList<UserReport> reports, int symptomID) {
         reports.clear();
 
