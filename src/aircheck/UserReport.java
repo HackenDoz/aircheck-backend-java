@@ -23,6 +23,8 @@ public class UserReport {
 
     public ArrayList<SymptomReport> symptoms;
 
+    public UserReport() {}
+
     public UserReport(int _reportID, double _latitude, double _longitude, Date _submissionDate){
         this.reportID = _reportID;
         this.latitude = _latitude;
