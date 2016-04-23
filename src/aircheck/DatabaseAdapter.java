@@ -2,11 +2,9 @@ package aircheck;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class DatabaseAdapter {
 
@@ -26,7 +24,7 @@ public class DatabaseAdapter {
         this.connection = dataSource.getConnection();
     }
 
-    public void getReports(ArrayList<UserReport> reports){
+    public void getReports(Map<Integer, UserReport> reports){
         reports.clear();
 
         try {
@@ -34,13 +32,22 @@ public class DatabaseAdapter {
             ResultSet rs = statement.executeQuery("SELECT * FROM reports");
 
             while(rs.next()){
-                UserReport report = new UserReport();
-                
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+                UserReport report = reports.get(rs.getInt("ReportID"));
+                if (report == null){
+                    report.reportID = rs.getInt("ReportID");
+                    report.submissionTime = rs.getDate("ReportDate");
+                    report.latitude = rs.getDouble("Latitude");
+                    report.longitude = rs.getDouble("Longitude");
+                }
 
+                report.addSymptomReport(new UserReport.SymptomReport(
+                        Symptoms.valueOf(rs.getString("Symptom")), rs.getInt("Severity")));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
 
     }
 
