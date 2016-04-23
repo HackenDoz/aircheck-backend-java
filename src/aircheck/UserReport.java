@@ -3,14 +3,16 @@ package aircheck;
 import java.sql.Date;
 import java.util.ArrayList;
 
-public class UserReport {
+public class UserReport implements Comparable<UserReport>{
+
+    public static final double EPS = 0.000001;
 
     public static class SymptomReport{
-        public Symptoms symptom;
+        public int symptomID;
         public int severity;
 
-        public SymptomReport(Symptoms _symptom, int _severity){
-            this.symptom = _symptom;
+        public SymptomReport(int _symptomID, int _severity){
+            this.symptomID = _symptomID;
             this.severity = _severity;
         }
     }
@@ -50,5 +52,16 @@ public class UserReport {
         return d;
     }
 
+    @Override
+    public int compareTo(UserReport report) {
+        if (Math.abs(this.latitude - report.latitude) > EPS)
+            return (this.latitude < report.latitude ? 1 : -1);
+        return (this.longitude < report.longitude ? 1 : -1);
+    }
+
+    public boolean equals(UserReport report){
+        return Math.abs(this.latitude - report.latitude) < EPS &&
+                Math.abs(this.longitude - report.longitude) < EPS;
+    }
 
 }
