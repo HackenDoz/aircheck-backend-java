@@ -84,7 +84,7 @@ public class DatabaseAdapter {
         try {
             Statement statement = connection.createStatement();
 
-            statement.executeQuery("DELETE FROM mapping;");
+            statement.executeUpdate("DELETE FROM mapping;");
 
             String query = "INSERT INTO mapping (latitude, longitude, radius, severity) VALUES ("
                     + point.latitude + "," + point.longitude + "," + point.radius + "," + 1 + ");";
