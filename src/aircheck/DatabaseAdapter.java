@@ -14,7 +14,7 @@ public class DatabaseAdapter {
     private MysqlDataSource dataSource;
     private Connection connection;
 
-    public DatabaseAdapter() throws Exception{
+    public DatabaseAdapter() throws Exception {
 
         dataSource = new MysqlDataSource();
         dataSource.setServerName(ServerConfig.MYSQL_HOST);
@@ -27,11 +27,11 @@ public class DatabaseAdapter {
         this.connection = dataSource.getConnection();
     }
 
-    public boolean cmpDouble(double a, double b){
+    public boolean cmpDouble(double a, double b) {
         return Math.abs(a - b) <= EPS;
     }
 
-    public void getReports(ArrayList<UserReport> reports){
+    public void getReports(ArrayList<UserReport> reports) {
         reports.clear();
 
         ArrayList<UserReport> tempReports = new ArrayList<>();
@@ -40,7 +40,7 @@ public class DatabaseAdapter {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM reports");
 
-            while(rs.next()){
+            while (rs.next()) {
                 UserReport report = new UserReport();
                 report.reportID = rs.getInt("id");
                 report.latitude = rs.getDouble("latitude");
@@ -64,8 +64,8 @@ public class DatabaseAdapter {
 
         int lastIndex = 0;
 
-        for (int i = 1; i < tempReports.size(); i++){
-            if (tempReports.get(i).equals(tempReports.get(lastIndex))){
+        for (int i = 1; i < tempReports.size(); i++) {
+            if (tempReports.get(i).equals(tempReports.get(lastIndex))) {
                 tempReports.get(lastIndex).symptoms.addAll(tempReports.get(i).symptoms);
             } else {
                 reports.add(tempReports.get(lastIndex));
@@ -74,12 +74,12 @@ public class DatabaseAdapter {
         }
     }
 
-    public void addMappingPoint(MapPoint point){
-        try{
+    public void addMappingPoint(MapPoint point) {
+        try {
             Statement statement = connection.createStatement();
 
 
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
