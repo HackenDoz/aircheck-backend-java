@@ -12,19 +12,16 @@ public class Main {
         dbAdapter = new DatabaseAdapter();
 
         while (true) {
-            dbAdapter.clearMappingPoints();
+            ArrayList<MapPoint> finalPoints = new ArrayList<>();
 
-            for (int i = 0; i < ServerConfig.SYMPTOM_COUNT; i++){
-
-                ArrayList<MapPoint> finalPoints = new ArrayList<>();
-
+            for (int i = 0; i < ServerConfig.SYMPTOM_COUNT; i++) {
                 ArrayList<UserReport> reports = new ArrayList<>();
                 dbAdapter.getReportsBySymptom(reports, i);
                 DisjointSet dset = new DisjointSet(reports);
 
-                for (int x1 = 0; x1 < reports.size(); x1++){
-                    for (int x2 = x1 + 1; x2 < reports.size(); x2++){
-                        if (reports.get(x1).getDistance(reports.get(x2)) <= ServerConfig.CIRCLE_RADIUS){
+                for (int x1 = 0; x1 < reports.size(); x1++) {
+                    for (int x2 = x1 + 1; x2 < reports.size(); x2++) {
+                        if (reports.get(x1).getDistance(reports.get(x2)) <= ServerConfig.CIRCLE_RADIUS) {
                             dset.merge(x1, x2);
                         }
                     }
@@ -41,7 +38,7 @@ public class Main {
 
                     int totalSeverity = 0;
 
-                    for (MapPoint mp : entry.getValue()){
+                    for (MapPoint mp : entry.getValue()) {
                         minLat = Math.min(minLat, mp.latitude);
                         maxLat = Math.max(maxLat, mp.latitude);
 
@@ -55,13 +52,12 @@ public class Main {
                             Math.max(maxLat - minLat, maxLng - minLng) / 2.0, i,
                             totalSeverity / entry.getValue().size()));
                 }
-
-                dbAdapter.addMappingPoints(finalPoints);
             }
+            dbAdapter.addMappingPoints(finalPoints);
 
-            try{
+            try {
                 Thread.sleep(5000);
-            } catch (Exception ex){
+            } catch (Exception ex) {
 
             }
         }

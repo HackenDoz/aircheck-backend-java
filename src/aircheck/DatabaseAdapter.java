@@ -79,8 +79,8 @@ public class DatabaseAdapter {
         String query = "INSERT INTO mapping (latitude, longitude, radius, severity, symptom_id) VALUES ";
         for (int i = 0; i < points.size(); i++) {
             MapPoint point = points.get(i);
-            query += "(" + point.latitude + "," + point.longitude + "," + point.radius + "," + points.get(i).severity+ ","
-                    + points.get(i).symptom + ")";
+            query += "(" + point.latitude + "," + point.longitude + "," + point.radius + "," + point.severity + ","
+                    + point.symptom + ")";
             if (i != points.size() - 1) {
                 query += ",";
             }
@@ -88,19 +88,11 @@ public class DatabaseAdapter {
 
         try {
             Statement statement = connection.createStatement();
+            statement.executeUpdate("TRUNCATE TABLE mapping");
             System.out.println(query);
             statement.executeUpdate(query);
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }
-    }
-
-    public void clearMappingPoints() {
-        try {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate("TRUNCATE TABLE mapping");
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 }
