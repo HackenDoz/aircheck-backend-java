@@ -65,6 +65,7 @@ public class Main {
                         reports.get(i).longitude, ServerConfig.CIRCLE_RADIUS));
             }
 
+            dbAdapter.clearMappingPoints();
             for (Map.Entry<Integer, ArrayList<MapPoint>> entry : points.entrySet()) {
                 if (entry.getValue() != null && entry.getValue().size() != 0) {
                     double minX = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE;

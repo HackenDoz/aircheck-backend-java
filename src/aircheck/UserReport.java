@@ -40,17 +40,7 @@ public class UserReport implements Comparable<UserReport> {
     }
 
     public double getDistance(UserReport report) {
-        double dLatitude = Math.abs(this.latitude - report.latitude);
-        double dLongitude = Math.abs(this.longitude - report.longitude);
-
-        double a = Math.pow(Math.sin(dLatitude / 2.0), 2) +
-                Math.cos(this.latitude) * Math.cos(report.latitude) * Math.pow(Math.sin(dLongitude / 2.0), 2);
-
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        double d = 12756.0 * c;
-
-        return d;
+        return DatabaseAdapter.distFrom(latitude, longitude, report.latitude, report.longitude);
     }
 
     @Override

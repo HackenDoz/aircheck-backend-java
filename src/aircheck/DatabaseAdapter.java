@@ -80,14 +80,20 @@ public class DatabaseAdapter {
         }
     }
 
+    public void clearMappingPoints() {
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("DELETE FROM mapping");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public void addMappingPoint(MapPoint point) {
         try {
             Statement statement = connection.createStatement();
 
-            statement.executeUpdate("DELETE FROM mapping;");
-
             String query = "INSERT INTO mapping (latitude, longitude, radius, severity) VALUES ("
-                    + point.latitude + "," + point.longitude + "," + point.radius + "," + 1 + ");";
+                    + point.latitude + "," + point.longitude + "," + point.radius + "," + 1 + ")";
 
             System.out.println(query);
 
@@ -97,4 +103,17 @@ public class DatabaseAdapter {
         }
     }
 
+
+    public static double distFrom(double lat1, double lng1, double lat2, double lng2) {
+        double earthRadius = 6371000;
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double dist = (double) (earthRadius * c);
+
+        return dist;
+    }
 }
