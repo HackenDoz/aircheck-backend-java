@@ -48,6 +48,7 @@ public class DatabaseAdapter {
                 report.submissionTime = rs.getDate("created_at");
 
                 report.addSymptomReport(new UserReport.SymptomReport(rs.getInt("symptom_id"), rs.getInt("severity")));
+                report.printInfo();
 
                 tempReports.add(report);
             }
@@ -61,6 +62,11 @@ public class DatabaseAdapter {
         tempReports.add(new UserReport(-1, 99999, 99999, new Date(0)));
 
         Collections.sort(tempReports);
+
+        System.out.println("info in collections");
+        for (UserReport ur: tempReports){
+            System.out.printf("lat = %.4f, lng = %.4f\n", ur.latitude, ur.longitude);
+        }
 
         int lastIndex = 0;
 
@@ -78,12 +84,14 @@ public class DatabaseAdapter {
         try {
             Statement statement = connection.createStatement();
 
-            statement.executeQuery("TRUNCATE TABLE mapping");
+            statement.executeQuery("DELETE FROM mapping;");
 
             String query = "INSERT INTO mapping (latitude, longitude, radius, severity) VALUES ("
-                    + point.latitude + "," + point.longitude + "," + point.radius + "," + 1 + ")";
+                    + point.latitude + "," + point.longitude + "," + point.radius + "," + 1 + ");";
 
-            statement.executeQuery(query);
+            System.out.println(query);
+
+            statement.executeUpdate(query);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

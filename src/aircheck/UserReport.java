@@ -23,7 +23,7 @@ public class UserReport implements Comparable<UserReport> {
     public double latitude;
     public double longitude;
 
-    public ArrayList<SymptomReport> symptoms;
+    public ArrayList<SymptomReport> symptoms = new ArrayList<>();
 
     public UserReport() {
     }
@@ -56,13 +56,17 @@ public class UserReport implements Comparable<UserReport> {
     @Override
     public int compareTo(UserReport report) {
         if (Math.abs(this.latitude - report.latitude) > EPS)
-            return (this.latitude < report.latitude ? 1 : -1);
-        return (this.longitude < report.longitude ? 1 : -1);
+            return (this.latitude < report.latitude ? -1 : 1);
+        return (this.longitude < report.longitude ? -1 : 1);
     }
 
     public boolean equals(UserReport report) {
         return Math.abs(this.latitude - report.latitude) < EPS &&
                 Math.abs(this.longitude - report.longitude) < EPS;
+    }
+
+    public void printInfo(){
+        System.out.printf("reportID = %d, lat = %.4f, lng = %.4f\n", reportID, latitude, longitude);
     }
 
 }

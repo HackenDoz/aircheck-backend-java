@@ -1,6 +1,7 @@
 package aircheck;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Main {
@@ -29,14 +30,18 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
+        System.out.println("hi");
+
         reports = new ArrayList<>();
+        System.out.println("hi");
         dbAdapter = new DatabaseAdapter();
+        System.out.println("hi");
+        points = new HashMap<>();
+        System.out.println("hi");
 
         while (true) {
-            try {
-                Thread.sleep(5000);
-            } catch (Exception ex) {
-            }
+            System.out.println("Waiting for reports");
+
             dbAdapter.getReports(reports);
 
             disjointSet = new int[reports.size()];
@@ -76,6 +81,11 @@ public class Main {
                     dbAdapter.addMappingPoint(new MapPoint((minX + maxX) / 2.0, (minY + maxY) / 2.0,
                             Math.max(maxX - minX, maxY - minY) / 2.0 + ServerConfig.CIRCLE_RADIUS));
                 }
+            }
+
+            try {
+                Thread.sleep(5000);
+            } catch (Exception ex) {
             }
         }
     }
